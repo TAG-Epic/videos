@@ -3,4 +3,6 @@ WORKDIR opt/
 COPY go.* ./
 RUN go mod download
 COPY . ./
-CMD ["sh", "run.sh"]
+RUN go get
+RUN go build -o out
+CMD ["./out"]
