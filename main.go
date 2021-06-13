@@ -13,6 +13,7 @@ import (
 	"github.com/NebulousLabs/go-skynet/v2"
 	"github.com/bluemediaapp/models"
 	"github.com/bwmarrin/snowflake"
+	"github.com/dhowden/tag"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -79,6 +80,17 @@ func main() {
 		if err != nil {
 			return err
 		}
+
+		video_meta, err := tag.ReadFrom(file_reader)
+		if err != nil {
+			return err
+		}
+
+		video_format := video_meta.Format()
+		if video_format != "MP4" {
+			return ctx.Status(400).SendString("We only accept mp4's")
+		}
+
 		upload["upload"] = file_reader
 		skylink, err := skyClient.Upload(upload, skynet.DefaultUploadOptions)
 		if err != nil {
