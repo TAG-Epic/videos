@@ -48,8 +48,8 @@ func main() {
 	snowflake.Epoch = time.Date(2020, time.January, 0, 0, 0, 0, 0, time.UTC).Unix()
 	snowNode, _ := snowflake.NewNode(1)
 
-	app.Get("/upload/:user_id", func(ctx *fiber.Ctx) error {
-		userId, err := strconv.ParseInt(ctx.Params("user_id"), 10, 64)
+	app.Post("/upload", func(ctx *fiber.Ctx) error {
+		userId, err := strconv.ParseInt(ctx.Get("auth_user_id"), 10, 64)
 		if err != nil {
 			return err
 		}
@@ -116,8 +116,8 @@ func main() {
 		return ctx.JSON(video)
 
 	})
-	app.Get("/delete/:video_id/:user_id", func(ctx *fiber.Ctx) error {
-		videoId, err := strconv.ParseInt(ctx.Params("video_id"), 10, 64)
+	app.Post("/delete", func(ctx *fiber.Ctx) error {
+		videoId, err := strconv.ParseInt(ctx.Get("video_id"), 10, 64)
 		if err != nil {
 			return err
 		}
@@ -126,7 +126,7 @@ func main() {
 		if err != nil {
 			return ctx.Status(404).SendString("Video was not found.")
 		}
-		deleterId, err := strconv.ParseInt(ctx.Params("user_id"), 10, 64)
+		deleterId, err := strconv.ParseInt(ctx.Get("auth_user_id"), 10, 64)
 		if err != nil {
 			return err
 		}
